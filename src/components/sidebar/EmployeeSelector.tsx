@@ -53,7 +53,7 @@ export const EmployeeSelector = ({
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-[300px]">
         <div className="px-2 py-2">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -65,14 +65,16 @@ export const EmployeeSelector = ({
             />
           </div>
         </div>
-        {filteredEmployees.map((employee) => (
-          <DropdownMenuItem
-            key={employee.id}
-            onClick={() => onSelectEmployee(employee.full_name)}
-          >
-            {employee.full_name}
-          </DropdownMenuItem>
-        ))}
+        <div className="max-h-[300px] overflow-y-auto">
+          {filteredEmployees.map((employee) => (
+            <DropdownMenuItem
+              key={employee.id}
+              onClick={() => onSelectEmployee(employee.full_name)}
+            >
+              {employee.full_name}
+            </DropdownMenuItem>
+          ))}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
