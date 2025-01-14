@@ -13,20 +13,14 @@ interface FetchEmployeesResponse {
   count: number;
 }
 
-const PAGE_SIZE = 10;
-
-export const useEmployeeManagement = (page: number = 1) => {
+export const useEmployeeManagement = () => {
   const queryClient = useQueryClient();
 
-  const fetchEmployees = async (pageParam: number): Promise<FetchEmployeesResponse> => {
-    console.log('Fetching employees for page:', pageParam);
-    const start = (pageParam - 1) * PAGE_SIZE;
-    
+  const fetchEmployees = async (): Promise<FetchEmployeesResponse> => {
     const [{ data: employees, error: fetchError }, { count, error: countError }] = await Promise.all([
       supabase
         .from('profiles')
         .select('id, full_name, created_at')
-        .range(start, start + PAGE_SIZE - 1)
         .order('full_name'),
       supabase
         .from('profiles')
@@ -43,8 +37,8 @@ export const useEmployeeManagement = (page: number = 1) => {
   };
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['employees', page],
-    queryFn: () => fetchEmployees(page),
+    queryKey: ['employees'],
+    queryFn: fetchEmployees,
   });
 
   const addEmployeeMutation = useMutation({
@@ -55,32 +49,22 @@ export const useEmployeeManagement = (page: number = 1) => {
 
       const normalizedNewName = newName.trim().toUpperCase();
 
-      // Check for existing employee with the same name
-      const { data: existingEmployees, error: checkError } = await supabase
+      const { data: existingEmployees } = await supabase
         .from('profiles')
         .select('full_name')
         .eq('full_name', normalizedNewName);
-
-      if (checkError) {
-        console.error('Error checking for existing employee:', checkError);
-        throw new Error("Erro ao verificar funcionário existente");
-      }
 
       if (existingEmployees && existingEmployees.length > 0) {
         throw new Error("Já existe um funcionário com este nome. Por favor, escolha um nome diferente.");
       }
 
-      const { error: insertError } = await supabase
+      const { error } = await supabase
         .from('profiles')
         .insert({
           full_name: normalizedNewName
         });
 
-      if (insertError) {
-        console.error('Error inserting employee:', insertError);
-        throw new Error("Erro ao adicionar funcionário");
-      }
-
+      if (error) throw error;
       return true;
     },
     onSuccess: () => {
@@ -133,7 +117,6 @@ export const useEmployeeManagement = (page: number = 1) => {
     deleteEmployee: async (id: string) => {
       await deleteEmployeeMutation.mutateAsync(id);
       return true;
-    },
-    totalPages: Math.ceil((data?.count || 0) / PAGE_SIZE)
+    }
   };
 };
