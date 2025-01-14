@@ -12,14 +12,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { EmployeeSelector } from "./sidebar/EmployeeSelector";
 import { StatusFilter } from "./sidebar/StatusFilter";
 import { AddEmployeeForm } from "./sidebar/AddEmployeeForm";
@@ -40,15 +32,13 @@ export const Sidebar = ({
 }: SidebarProps) => {
   const [isAddingEmployee, setIsAddingEmployee] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   
   const {
     employees,
     isLoading,
-    totalPages,
     addEmployee,
     deleteEmployee
-  } = useEmployeeManagement(currentPage);
+  } = useEmployeeManagement();
 
   const selectedEmployeeData = employees.find(emp => emp.full_name === selectedEmployee);
 
@@ -127,37 +117,6 @@ export const Sidebar = ({
               selectedStatus={selectedStatus}
               onStatusSelect={setSelectedStatus}
             />
-
-            {totalPages > 1 && (
-              <Pagination className="mt-4">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                    />
-                  </PaginationItem>
-                  
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(page)}
-                        isActive={currentPage === page}
-                      >
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )}
           </div>
         </div>
       </aside>
