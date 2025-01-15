@@ -35,6 +35,7 @@ export const Sidebar = ({
   
   const {
     employees,
+    totalEmployees,
     isLoading,
     addEmployee,
     deleteEmployee
@@ -116,6 +117,7 @@ export const Sidebar = ({
             <StatusFilter
               selectedStatus={selectedStatus}
               onStatusSelect={setSelectedStatus}
+              totalEmployees={totalEmployees}
             />
           </div>
         </div>
