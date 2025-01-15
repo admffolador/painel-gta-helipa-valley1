@@ -1,9 +1,14 @@
 interface StatusFilterProps {
   selectedStatus: string | null;
   onStatusSelect: (status: string | null) => void;
+  totalEmployees: number;
 }
 
-export const StatusFilter = ({ selectedStatus, onStatusSelect }: StatusFilterProps) => {
+export const StatusFilter = ({ 
+  selectedStatus, 
+  onStatusSelect,
+  totalEmployees 
+}: StatusFilterProps) => {
   const statusOptions = [
     { label: "FARM/ENTREGUE", color: "bg-emerald-500", value: "entregue" },
     { label: "1/2-FARM/ENTREGUE", color: "bg-amber-500", value: "meio-entregue" },
@@ -34,6 +39,11 @@ export const StatusFilter = ({ selectedStatus, onStatusSelect }: StatusFilterPro
           <span>{status.label}</span>
         </button>
       ))}
+      <div className="mt-4 pt-4 border-t border-border">
+        <div className="text-sm text-muted-foreground">
+          Nº TOTAL DE FUNCIONÁRIOS: <span className="font-medium text-foreground">{totalEmployees}</span>
+        </div>
+      </div>
     </div>
   );
 };
